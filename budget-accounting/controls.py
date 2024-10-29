@@ -15,69 +15,84 @@ class app():
         global ID_entry, balance_entry, balance_lbl, ID_lbl, btn_bal, cmb_amount, cmb_user, btn_show, entry_all, btn_add, name_entry,balance_entry
         if cmb.get() != '':
             if cmb.get() == 'Увеличить баланс':                                #При выборе "увеличить баланс" создаёт 2 поля для ввода, 3 текстовых сообщения и кнопку для вызова функции
-                txt = Label(text = 'Введите имя и на сколько будет увеличен баланс')    #создание текста в окне приложения
-                balance_entry = Entry(width = 30)
+                app.frame_clear()
+                txt = Label(frame,text = 'Введите имя и на сколько будет увеличен баланс')    #создание текста в окне приложения
+                balance_entry = Entry(frame, width = 30)
                 balance_entry.place(x = 525, y = 100)
-                balance_lbl = Label(text = 'Введите на сколько увеличить баланс', font = ('Times New Roman', 12)).place(x = 490, y = 75)
-                ID_entry = Entry(width = 30)
+                balance_lbl = Label(frame, text = 'Введите на сколько увеличить баланс', font = ('Times New Roman', 12)).place(x = 490, y = 75)
+                ID_entry = Entry(frame, width = 30)
                 ID_entry.place(x = 25, y = 100)
-                ID_lbl = Label(text = 'Введите кому добавить бюджет', font = ('Times New Roman', 12)).place(x = 5, y = 75)
-                btn_bal = Button(command = app.update_balance, text = 'Увеличить баланс!', width = 30)
+                ID_lbl = Label(frame,text = 'Введите кому добавить бюджет', font = ('Times New Roman', 12)).place(x = 5, y = 75)
+                btn_bal = Button(frame, command = app.update_balance, text = 'Увеличить баланс!', width = 30)
                 btn_bal.place(x = 275, y = 95)
                 
             elif cmb.get() == 'Вывести данные':                                #При выборе "вывести данные" создаётся 1 текстовое сообщение, 2 поля ввода и кнопка для вызова функции
+                app.frame_clear()
                 Values = Database.execute_read_query(connect, """select name from users""")
                 Values.append('Все')
-                txt = Label(text = 'Выберите количество строк и чьи операции вывести').place(x = 225, y = 50)
-                cmb_amount = Combobox(values = ['5', '10', '30'])
+                txt = Label(frame, text = 'Выберите количество строк и чьи операции вывести').place(x = 225, y = 50)
+                cmb_amount = Combobox(frame, values = ['5', '10', '30'])
                 cmb_amount.place(x = 5, y = 100)
-                cmb_user = Combobox(values = Values)
+                cmb_user = Combobox(frame, values = Values)
                 cmb_user.place(x = 600, y = 100)
-                btn_show = Button(text = 'Вывести!', command = app.show_querry, width = 30).place(x = 275, y = 95)
+                btn_show = Button(frame, text = 'Вывести!', command = app.show_querry, width = 30).place(x = 275, y = 95)
                 
             elif cmb.get() == 'Добавить покупку':                              #При выборе "добавить покупку" создаётся 1 текстовое сообщение, 1 поле ввода, 1 кнопка для вызова функции
-                txt = Label(text = 'Введите, что купили, его стоимость и id купившего человека', font = ('Times New Roman', 14)).place(x = 150, y = 75)
-                txt_entry = Label(text = 'Наименование товара стоимость id пользователя', font = ('Times New Roman', 12)).place(x = 5, y = 100)
-                entry_all = Entry(width = 50)
+                app.frame_clear()    
+                txt = Label(frame,text = 'Введите, что купили, его стоимость и id купившего человека', font = ('Times New Roman', 14)).place(x = 150, y = 75)
+                txt_entry = Label(frame,text = 'Наименование товара стоимость id пользователя', font = ('Times New Roman', 12)).place(x = 5, y = 100)
+                entry_all = Entry(frame,width = 50)
                 entry_all.place(x = 5, y = 125)
-                btn_add = Button(text = 'Добавить покупку', command = app.insert_purchase, width = 30)
+                btn_add = Button(frame,text = 'Добавить покупку', command = app.insert_purchase, width = 30)
                 btn_add.place(x = 575, y = 125)
                 
             elif cmb.get() == 'Добавить пользователя':                         #При выборе "Добавить пользователя" создаётся 1 текстовое сообщение, 2 поля ввода и 1 кнопка для вызова функции
-                txt = Label(text = 'Введите имя, и начальный баланс пользователя', font = ('Times New Roman', 14)).place(x = 150, y = 75)
-                name_entry = Entry(width = 40)
+                app.frame_clear()
+                txt = Label(frame, text = 'Введите имя, и начальный баланс пользователя', font = ('Times New Roman', 14)).place(x = 150, y = 75)
+                name_entry = Entry(frame, width = 40)
                 name_entry.place(x = 5, y = 100)
-                balance_entry = Entry(width = 40)
+                balance_entry = Entry(frame, width = 40)
                 balance_entry.place(x = 500, y = 100)
-                btn_append = Button(text = 'Добавить пользователя!', command = app.append_user).place(x = 300, y = 125)
+                btn_append = Button(frame, text = 'Добавить пользователя!', command = app.append_user).place(x = 300, y = 125)
                 
             elif cmb.get() == 'Удалить пользователя':                          #При выборе "Удалить пользователя" создаётся 1 текстовое сообщение, 1 поле ввода, 1 кнопка для вызова функции
-                txt = Label(text = 'Введите имя пользователя', font = ('Times New Roman', 14)).place(x = 250, y = 75)
-                name_entry = Entry(width = 40)
+                app.frame_clear()
+                txt = Label(frame, text = 'Введите имя пользователя', font = ('Times New Roman', 14)).place(x = 250, y = 75)
+                name_entry = Entry(frame, width = 40)
                 name_entry.place(x = 500, y = 100)
-                btn_delete = Button(text = 'Удалить пользователя', command = app.delete_user).place(x = 5, y = 100)
+                btn_delete = Button(frame, text = 'Удалить пользователя', command = app.delete_user).place(x = 5, y = 100)
                 
             elif cmb.get() == 'Посмотреть баланс':
+                app.frame_clear()
                 app.show_balance()
             
             elif cmb.get() == 'Построить график трат':
-                plotting.__init__(window)
+                app.frame_clear()
+                plotting.__init__(window, frame)
                 
             else:
                 text = 'Произошла ошибка в выборе функций приложения'
                 app.show_window(text)                                          #Показывает сообщение об ошибке
+    
+    def frame_clear():
+        global frame
+        list = window.slaves()
+        for i in list:
+            i.destroy()
+        frame = Frame(window)
+        frame.pack(side="bottom", expand=False, fill="both", ipady = 300, ipadx = 300)
     
     def place_lbl(self, string, amount):                                       #Вывод результата запроса в окно приложения
         txt = ''
         if amount >= 15:
             amount -= 15 
             X = 80
-            tbl_2 = Label(text = 'Название || стоимость || ID пользователя || Дата покупки', font = ('Times New Roman', 8)).place(x = 5 * X, y = 150)
+            tbl_2 = Label(frame, text = 'Название || стоимость || ID пользователя || Дата покупки', font = ('Times New Roman', 8)).place(x = 5 * X, y = 150)
         else:
             X = 1
         for i in string:
             txt += str(i) + '||'                                               #Добавление разделителя
-        self.lbl = Label(text = txt, font = ('Times New Roman', 12))           #Вывод текста на экран
+        self.lbl = Label(frame, text = txt, font = ('Times New Roman', 12))    #Вывод текста на экран
         self.lbl.place(x = 5 * X, y = (200 + 20*amount))
 
     def show_window(txt):                                                      #Создание окна в котором будет написано сообщение о ошибке/подтверждение выполнения запроса
@@ -89,13 +104,15 @@ class app():
             
                 
     def main():                                                                #Запуск ГПИ
-        global cmb, window
+        global cmb, window, frame
         window = Tk()
         window.title('Учёт покупок и бюджета')                                 #Присвоение загаловка приложению
         window.geometry('750x750')                                             #Задача размеров окна
         btn = Button(text = 'Выбрать!', width = 23, command = app.__init__).place(x = 600, y = 0)   #создание кнопки
         cmb = Combobox(value = ['Увеличить баланс', 'Вывести данные', 'Добавить покупку', 'Добавить пользователя', 'Удалить пользователя', 'Посмотреть баланс', 'Построить график трат'])          #создание выпадающего списка
         cmb.place(x = 5, y = 0)
+        frame = Frame(window)
+        frame.pack(side="bottom", expand=False, fill="both", ipady = 300, ipadx = 300)
         window.mainloop()                                                      #зацикливание работы приложения
         
 
@@ -216,3 +233,4 @@ class app():
                 app.place_lbl(app, users[i], i)                                #Выведение строчек на экран
         tbl_1 = Label(text = 'Название || стоимость || ID пользователя || Дата покупки', font = ('Times New Roman', 8)).place(x = 5, y = 150)
         
+app.main()
