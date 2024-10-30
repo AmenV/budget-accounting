@@ -232,5 +232,4 @@ class app():
             for user in users:
                 app.place_lbl(app, users[i], i)                                #Выведение строчек на экран
         tbl_1 = Label(text = 'Название || стоимость || ID пользователя || Дата покупки', font = ('Times New Roman', 8)).place(x = 5, y = 150)
-        
-app.main()
+
