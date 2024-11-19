@@ -94,10 +94,10 @@ connect = Database.create_connection('1.sqlite')                               #
 
 #     Database.execute_query(connect, create_purchases)
 # Database.execute_query(connect, create_users)
-select_users = "SELECT * from logins"
-users = Database.execute_read_query(connect, select_users)
-purch = Database.execute_read_query(connect, "SELECT * from purchases")
-for user in users:
-    print(user)
+#select_users = "SELECT * from logins"
+#users = Database.execute_read_query(connect, select_users)
+#purch = Database.execute_read_query(connect, "SELECT * from purchases")
+#for user in users:
+#    print(user)
 # for p in purch:
 #     print(p)
