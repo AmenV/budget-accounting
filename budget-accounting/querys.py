@@ -39,6 +39,7 @@ class create_schema():
             login Text NOT NULL,
             password Text NOT NULL,
             user_id INTEGER NOT NULL,
+            root int default 0,
             foreign key (user_id) references users (id)
         );
         """                                                                    #Создание таблицы с логинами и паролями                                    
@@ -79,7 +80,7 @@ connect = Database.create_connection('1.sqlite')                               #
 # # ('зиeд', 'фыыьфупртсрj', '3');
 # # """
 # # Database.execute_query(connect, query)
-# for i in range(30):                                                          #Запросы для ввода покупок
+# for i in range(10):                                                          #Запросы для ввода покупок
 #     rand = []
 #     rand.append(Name[r.randint(0, 5)])
 #     rand.append(Cost[r.randint(0, 5)])
@@ -93,10 +94,10 @@ connect = Database.create_connection('1.sqlite')                               #
 
 #     Database.execute_query(connect, create_purchases)
 # Database.execute_query(connect, create_users)
-# select_users = "SELECT * from users"
-# users = Database.execute_read_query(connect, select_users)
-# purch = Database.execute_read_query(connect, "SELECT * from purchases")
-# for user in users:
-#     print(user)
+select_users = "SELECT * from logins"
+users = Database.execute_read_query(connect, select_users)
+purch = Database.execute_read_query(connect, "SELECT * from purchases")
+for user in users:
+    print(user)
 # for p in purch:
 #     print(p)
