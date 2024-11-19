@@ -16,12 +16,15 @@ class LogIn():                                                                 #
         Root.mainloop()
         
     def take_passwords():
+        global root_q
         ans = []
         string = ''
         logins = []
         passwords = []
         query = """select * from logins"""                                     #получение закодированных логинов и паролей
         temp = Database.execute_read_query(connect, query)
+        root = """select root from logins;"""
+        root_q = Database.execute_read_query(connect, root)
         for i in range(len(temp)):
             string += temp[i][1] + ' ' + temp[i][2] + ' '                      #запись закодированных логинов и паролей в строку
         string = shifrovka.v_deshifr(string)                                   #Декодирование
@@ -50,6 +53,8 @@ class LogIn():                                                                 #
             for i in range(len(logins)):
                 if log == logins[i] and pas == passwords[i]:                   #Логин
                     Root.destroy()                                             #Уничтожение окна
-                    app.main()                                                 #Создание основного окна
+                    print(root_q)
+                    print(root_q[i])
+                    app.main(root_q[i])                                        #Создание основного окна
                 elif log != logins[i] or pas != passwords[i]:
                     ans = Label(Root, text = 'Логин или пароль введены не верно').place(x = 5, y = 300) #Выведение сообщения
