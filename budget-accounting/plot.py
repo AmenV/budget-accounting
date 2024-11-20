@@ -19,7 +19,7 @@ class plotting():
         m.add_command(label ="Сохранить график", command = plotting.save_fig)
         
     def main(frame):
-        global ID
+        global ID, fig
         purchase = []
         date = []
         name = []
