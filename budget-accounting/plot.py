@@ -7,17 +7,19 @@ from connect import Database
 from matplotlib.figure import Figure 
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk) 
 
-connect = Database.create_connection('1.sqlite')                               #запрос к подключению к БД
+connect = Database.create_connection('1.sqlite')                               #Запрос к подключению к БД
 class plotting():
-    def __init__(window, frame):                                               #Создание текстового сообщения, поля ввода и кнопки
+    def __init__(window, frame, m):                                               #Создание текстового сообщения, поля ввода и кнопки
         global entry_name
         txt = Label(frame, text = 'Введите id пользователя, чей график будет выведен', font = ('Times New Roman', 14)).place(x = 5, y = 100)
         entry_name = Entry(frame, width = 15)
         entry_name.place(x = 5, y = 125)
         btn_plot = Button(frame, text = 'Построить график', command = lambda frame = frame: plotting.main(window))
         btn_plot.place(x = 250, y = 150)
+        m.add_command(label ="Сохранить график", command = plotting.save_fig)
         
     def main(frame):
+        global ID
         purchase = []
         date = []
         name = []
@@ -28,7 +30,7 @@ class plotting():
             array = Database.execute_read_query(connect, select_purchases)
             select_user = f"""select name from users where id = '{ID}'"""      #Получени имени 
             array2 = Database.execute_read_query(connect, select_user)
-            for i in range(len(array)):                                        #размещение полученных данных в 2ух массивах
+            for i in range(len(array)):                                        #Размещение полученных данных в 2ух массивах
                 purchase.append(array[i][0])
                 date.append(array[i][1])
             fig = Figure(figsize = (6, 6), dpi = 100) 
@@ -39,3 +41,6 @@ class plotting():
             canvas = FigureCanvasTkAgg(fig, master=frame)                      #Создание полотна и размещение фигуры в окне
             canvas.draw()                                                      #Отрисовка полотна
             canvas.get_tk_widget().place(x = 0, y = 200)                       #Размещение полотна
+            
+    def save_fig():
+        fig.savefig(f'{ID}.png')                                               #Сохранение граффика
