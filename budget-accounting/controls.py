@@ -4,7 +4,7 @@ from tkinter.ttk import *
 from shifrator import shifrovka
 from connect import Database
 from querys import create_schema
-from datetime import datetime
+from datetime import date, datetime
 from plot import plotting
 
 connect = Database.create_connection('1.sqlite')#запрос к подключению к БД
@@ -12,18 +12,20 @@ connect = Database.create_connection('1.sqlite')#запрос к подключ�
     
 class app():
     def __init__(root):
-        global ID_entry, balance_entry, balance_lbl, ID_lbl, btn_bal, cmb_amount, cmb_user, btn_show, entry_all, btn_add, name_entry,balance_entry
+        global ID_entry, balance_entry, balance_lbl, ID_lbl, btn_bal, cmb_amount, cmb_user, btn_show, entry_all, btn_add, name_entry, balance_entry, cmb_date
         if cmb.get() != '':                
             if cmb.get() == 'Вывести данные':                                  #При выборе "вывести данные" создаётся 1 текстовое сообщение, 2 поля ввода и кнопка для вызова функции
                 app.frame_clear()
                 Values = Database.execute_read_query(connect, """select name from users""")
                 Values.append('Все')
-                txt = Label(frame, text = 'Выберите количество строк и чьи операции вывести').place(x = 225, y = 50)
+                txt = Label(frame, text = 'Выберите количество строк, чьи операции вывести и промежуток времени в виде(дата:дата)').place(x = 225, y = 50)
                 cmb_amount = Combobox(frame, values = ['5', '10', '30'])
                 cmb_amount.place(x = 5, y = 100)
                 cmb_user = Combobox(frame, values = Values)
-                cmb_user.place(x = 600, y = 100)
-                btn_show = Button(frame, text = 'Вывести!', command = app.show_querry, width = 30).place(x = 275, y = 95)
+                cmb_user.place(x = 300, y = 100)
+                cmb_date = Entry(frame, width = 20)
+                cmb_date.place(x = 600, y = 100)
+                btn_show = Button(frame, text = 'Вывести!', command = app.show_querry, width = 30).place(x = 275, y = 125)
                 
             elif cmb.get() == 'Добавить покупку':                              #При выборе "добавить покупку" создаётся 1 текстовое сообщение, 1 поле ввода, 1 кнопка для вызова функции
                 app.frame_clear()    
@@ -104,7 +106,6 @@ class app():
             
                 
     def main(root):                                                            #Запуск ГПИ
-        print(root)
         if root == (1,):
             values = ['Увеличить баланс', 'Вывести данные', 'Добавить покупку', 'Добавить пользователя', 'Удалить пользователя', 'Посмотреть баланс', 'Построить график трат']
         else:
@@ -213,16 +214,27 @@ class app():
         
 
     def show_querry():                                                         #запрос вывода последних n покупок 
+        today = ''
+        Today = []
+        dates = []
+        dates = cmb_date.get().split(':')
         names = cmb_user.get()
         k = int(cmb_amount.get())
+        Today = date.today()
+        today = str(Today.year) + '-' + str(Today.month) + '-' + str(Today.day)
+        if len(dates) == 1 and dates[0] == '':
+            dates.append(date.today())
+            dates[0] = '1999-01-01'
+        elif dates[1] == '' and dates[0] != '':
+            dates[1] = date.today()
         if names == 'Все':
-            select_users = """
-            select * from purchases;
+            select_users = f"""
+            select * from purchases where date between '{dates[0]}' and '{dates[1]}';
             """                                                                #запрос на получение всех строк с таблицы purchases
         else:
             select_users = f"""
             Select name_purchase, cost, user_id, date from purchases join users on purchases.user_id = users.id 
-            where users.name like '{names}';
+            where users.name like '{names}' and date between '{dates[0]}' and '{dates[1]}';
             """                                                                #запрос на получение всех строк с таблицы purchases, где имя пользователя задано
         
         users = Database.execute_read_query(connect, select_users)             #отправление запроса к БД
@@ -236,4 +248,4 @@ class app():
                 break
             for user in users:
                 app.place_lbl(app, users[i], i)                                #Выведение строчек на экран
-        tbl_1 = Label(text = 'Название || стоимость || ID пользователя || Дата покупки', font = ('Times New Roman', 8)).place(x = 5, y = 150)
+        tbl_1 = Label(frame, text = 'Название || стоимость || ID пользователя || Дата покупки', font = ('Times New Roman', 8)).place(x = 5, y = 150)
