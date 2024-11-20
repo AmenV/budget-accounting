@@ -4,10 +4,10 @@ from tkinter.ttk import *
 from shifrator import shifrovka
 from connect import Database
 from querys import create_schema
-from datetime import date, datetime
+from datetime import date,datetime
 from plot import plotting
 
-connect = Database.create_connection('1.sqlite')#запрос к подключению к БД
+connect = Database.create_connection('1.sqlite')                               #Запрос к подключению к БД
 
     
 class app():
@@ -16,6 +16,7 @@ class app():
         if cmb.get() != '':                
             if cmb.get() == 'Вывести данные':                                  #При выборе "вывести данные" создаётся 1 текстовое сообщение, 2 поля ввода и кнопка для вызова функции
                 app.frame_clear()
+                m.add_command(label ="Сохранить данные в файл", command = app.save_data)
                 Values = Database.execute_read_query(connect, """select name from users""")
                 Values.append('Все')
                 txt = Label(frame, text = 'Выберите количество строк, чьи операции вывести и промежуток времени в виде(дата:дата)').place(x = 225, y = 50)
@@ -54,7 +55,7 @@ class app():
                 
             elif cmb.get() == 'Увеличить баланс' and root == 1:                #При выборе "увеличить баланс" создаёт 2 поля для ввода, 3 текстовых сообщения и кнопку для вызова функции
                 app.frame_clear()
-                txt = Label(frame,text = 'Введите имя и на сколько будет увеличен баланс')    #создание текста в окне приложения
+                txt = Label(frame,text = 'Введите имя и на сколько будет увеличен баланс')    #Создание текста в окне приложения
                 balance_entry = Entry(frame, width = 30)
                 balance_entry.place(x = 525, y = 100)
                 balance_lbl = Label(frame, text = 'Введите на сколько увеличить баланс', font = ('Times New Roman', 12)).place(x = 490, y = 75)
@@ -70,7 +71,7 @@ class app():
             
             elif cmb.get() == 'Построить график трат':
                 app.frame_clear()
-                plotting.__init__(window, frame)
+                plotting.__init__(window, frame, m)
                 
             else:
                 text = 'Произошла ошибка в выборе функций приложения'
@@ -110,16 +111,18 @@ class app():
             values = ['Увеличить баланс', 'Вывести данные', 'Добавить покупку', 'Добавить пользователя', 'Удалить пользователя', 'Посмотреть баланс', 'Построить график трат']
         else:
             values = ['Вывести данные', 'Добавить покупку', 'Посмотреть баланс', 'Построить график трат']
-        global cmb, window, frame
+        global cmb, window, frame, m
         window = Tk()
         window.title('Учёт покупок и бюджета')                                 #Присвоение загаловка приложению
         window.geometry('750x750')                                             #Задача размеров окна
         btn = Button(text = 'Выбрать!', width = 23, command = lambda root=root: app.__init__(root)).place(x = 600, y = 0)   #создание кнопки
-        cmb = Combobox(value = values)                                         #создание выпадающего списка
+        cmb = Combobox(value = values)                                         #Создание выпадающего списка
         cmb.place(x = 5, y = 0)
         frame = Frame(window)
         frame.pack(side="bottom", expand=False, fill="both", ipady = 300, ipadx = 300)
-        window.mainloop()                                                      #зацикливание работы приложения
+        m = Menu(window, tearoff = 0)
+        window.config(menu = m)
+        window.mainloop()                                                      #Зацикливание работы приложения
         
 
     def show_balance():                                                        #Вывод баланса на экран
@@ -128,7 +131,7 @@ class app():
         
         users = Database.execute_read_query(connect, query)
         for i in range(len(users)):
-            app.place_lbl(app, users[i], i)                                    #вывод данных по пользователю на экран
+            app.place_lbl(app, users[i], i)                                    #Вывод данных по пользователю на экран
     
     def delete_user():                                                         #Удаление пользователя и записей о нём из бд
         try:
@@ -164,11 +167,11 @@ class app():
             Database.execute_query(connect, query)
             
             text = 'Запрос успешно выполнен'
-            app.show_window(text)                                               #Вывод сообщения в отдельном окне о том, что запрос успешном выполнен
+            app.show_window(text)                                              #Вывод сообщения в отдельном окне о том, что запрос успешном выполнен
         except ValueError:
             text = 'Неверно введены параметры'
             app.show_window(text)                                              #Показывает сообщение об ошибке
-    def insert_purchase():                                                     #вставка строк в таблицу purchases 
+    def insert_purchase():                                                     #Вставка строк в таблицу purchases 
         try:
             string = entry_all.get()
             Name, Cost, ID = string.split()
@@ -212,8 +215,25 @@ class app():
             text = 'Неверно введены параметры'
             app.show_window(text)                                              #Показывает сообщение об ошибке
         
+    def save_data():
+        ans = ''
+        for i in range(len(users)):
+            for j in range(len(users[i])):
+                ans += str(users[i][j] + ' ')
+            ans += '\n'
+        try:
+            f = open('file.txt', 'w+')                                         #Открытие файла в формате "запись"
+            f.write(ans)                                                       #Запись в файл строки
+            f.close()                                                          #Закрытие файла
+        except FileNotFoundError:
+            f = open('file.txt', 'wb')                                         #Создание файла
+            f.close()                                                          #Закрытие 
+            f = open('file.txt', 'w')                                          #Открытие файла в формате "запись"
+            f.write(ans)                                                       #Запись в файл строки 
+            f.close() 
 
-    def show_querry():                                                         #запрос вывода последних n покупок 
+    def show_querry():                                                         #Запрос вывода последних n покупок 
+        global users
         today = ''
         Today = []
         dates = []
@@ -230,14 +250,14 @@ class app():
         if names == 'Все':
             select_users = f"""
             select * from purchases where date between '{dates[0]}' and '{dates[1]}';
-            """                                                                #запрос на получение всех строк с таблицы purchases
+            """                                                                #Запрос на получение всех строк с таблицы purchases
         else:
             select_users = f"""
             Select name_purchase, cost, user_id, date from purchases join users on purchases.user_id = users.id 
             where users.name like '{names}' and date between '{dates[0]}' and '{dates[1]}';
-            """                                                                #запрос на получение всех строк с таблицы purchases, где имя пользователя задано
+            """                                                                #Запрос на получение всех строк с таблицы purchases, где имя пользователя задано
         
-        users = Database.execute_read_query(connect, select_users)             #отправление запроса к БД
+        users = Database.execute_read_query(connect, select_users)             #Отправление запроса к БД
         while len(users) > k:
             users.pop(0)
             if len(users) == k:
